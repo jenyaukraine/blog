@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Clomment
+ * /
 class Loader{
 
 	protected static $instance = null;
