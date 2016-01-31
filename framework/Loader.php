@@ -16,30 +16,20 @@ class Loader{
 	}
 
 	public static function load($classname){
-		//
+
+		// @TODO: Add here some registered $namespaces processing...
+
 		$path = str_replace('Framework','',$classname);
 		$path = __DIR__ . str_replace("\\","/", $path) . '.php';
 
 		if(file_exists($path)){
 			include_once($path);
 		}
-	}
-
-	public static function load2($classname){
-		//
-		$path = str_replace('Framework','',$classname);
-		$path = __DIR__ . str_replace("\\","/", $path) . '.php';
-
-		if(file_exists($path)){
-			include_once($path);
-		}
-
 	}
 
 	private function __construct(){
 		// Init
 		spl_autoload_register(array(__CLASS__, 'load'));
-		spl_autoload_register(array(__CLASS__, 'load2'));
 	}
 
 	private function __clone(){
@@ -47,7 +37,7 @@ class Loader{
 	}
 
 	public static function addNamespacePath($namespace, $path){
-		//...
+		//@TODO: Add here your code
 	}
 }
 
