@@ -15,7 +15,7 @@ class Loader{
 		return self::$instance;
 	}
 
-	public static function load($classname){
+	private static function load($classname){
 
 		// @TODO: Add here some registered $namespaces processing...
 
