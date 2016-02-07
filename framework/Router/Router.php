@@ -68,9 +68,5 @@ class Router{
 		return $pattern;
 	}
 
-	private function chunkVars(){
-		$route_pattern = self::routeToRegexp($route['route']);
-
-	}
 }
  
