@@ -25,16 +25,15 @@ class Router{
 	 *
 	 * @param $url
 	 */
-	public function parseRoute($url){
+	public function parseRoute($url = ''){
+
+		$url = empty($url) ? $_SERVER['REQUEST_URI'] : $url;
 
 		$route_found = null;
-		echo "<pre>";
 
 		foreach(self::$map as $route){
 
 			$pattern = $this->prepare($route);
-
-			echo $pattern.'<br />';
 
 			if(preg_match($pattern, $url, $params)){
 

@@ -13,11 +13,12 @@
  * @link       http://mindk.com
  */
 
-
 namespace Framework;
 
 
 use Framework\Router\Router;
+use Framework\Exception\HttpNotFoundException;
+use Framework\Response\Response;
 
 class Application {
 
@@ -25,15 +26,40 @@ class Application {
 
 		$router = new Router(include('../app/config/routes.php'));
 
-		$route =  $router->parseRoute($_SERVER['REQUEST_URI']);
+		$route =  $router->parseRoute();
+		require_once('../src/Blog/Controller/PostController.php');
 
-		if(!empty($route)){
+        try{
+	        if(!empty($route)){
+		        $controllerReflection = new \ReflectionClass($route['controller']);
+		        $action = $route['action'] . 'Action';
+		        if($controllerReflection->hasMethod($action)){
+			        $controller = $controllerReflection->newInstance();
+			        $actionReflection = $controllerReflection->getMethod($action);
+			        $response = $actionReflection->invokeArgs($controller, $route['params']);
 
-		} else {
+			        if($response instanceof Response){
+				    	// ...
 
-		}
+			        } else {
+				        throw new BadResponseTypeException('Ooops');
+			        }
+		        }
+			} else {
+		        throw new HttpNotFoundException('Route not found');
+			}
+        }catch(HttpNotFoundException $e){
+	         // Render 404 or just show msg
+        }
+        catch(AuthRequredException $e){
+	    	// Reroute to login page
+	        //$response = new RedirectResponse(...);
+        }
+        catch(\Exception $e){
+	        // Do 500 layout...
+	        echo $e->getMessage();
+        }
 
-		echo '<pre>';
-		print_r($route);
+		$response->send();
 	}
 } 
