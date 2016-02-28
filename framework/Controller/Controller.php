@@ -1,22 +1,34 @@
 <?php
-/**    
- * Controller.php
- * 
- * PHP version 5
- *
- * @category   Category Name
- * @package    Package Name
- * @subpackage Subpackage name
- * @author     dimmask <ddavidov@mindk.com>
- * @copyright  2011-2013 mindk (http://mindk.com). All rights reserved.
- * @license    http://mindk.com Commercial
- * @link       http://mindk.com
- */
-
 
 namespace Framework\Controller;
 
+use Framework\Response\Response;
 
-class Controller {
+/**
+ * Class Controller
+ * Controller prototype
+ *
+ * @package Framework\Controller
+ */
+abstract class Controller {
 
+	/**
+	 * Rendering method
+	 *
+	 * @param   string  Layout file name
+	 * @param   mixed   Data
+	 *
+	 * @return  Response
+	 */
+	public function render($layout, $data = array()){
+
+		// @TODO: Find a way to build full path to layout file
+		$fullpath = realpath('...' . $layout);
+
+		$renderer = new Renderer('...'); // Try to define renderer like a service. e.g.: Service::get('renderer');
+
+		$content = $renderer->render($fullpath, $data);
+
+		return new Response($content);
+	}
 } 
