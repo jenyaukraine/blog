@@ -3,6 +3,7 @@
 namespace Framework\Controller;
 
 use Framework\Response\Response;
+use Framework\Renderer\Renderer;
 
 /**
  * Class Controller
@@ -20,6 +21,12 @@ abstract class Controller {
 	 *
 	 * @return  Response
 	 */
+	public function redirect($location = '/')
+	{
+		$response = new Response();
+		$response->setHeader('Location', $location);
+		return $response->sendHeaders();
+	}
 	public function render($layout, $data = array()){
 
 		// @TODO: Find a way to build full path to layout file

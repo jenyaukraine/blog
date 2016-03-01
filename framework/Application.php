@@ -42,7 +42,7 @@ class Application {
 				    	// ...
 
 			        } else {
-				        throw new BadResponseTypeException('Ooops');
+				        //throw new BadResponseTypeException('Ooops');
 			        }
 		        }
 			} else {

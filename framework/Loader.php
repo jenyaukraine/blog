@@ -2,43 +2,45 @@
 /**
  * Clomment
  */
-class Loader{
-
-	protected static $instance = null;
-	protected static $namespaces = array();
-
-	public static function getInstance(){
-		if(empty(self::$instance)){
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-	private static function load($classname){
-
-		// @TODO: Add here some registered $namespaces processing...
-
-		$path = str_replace('Framework','',$classname);
-		$path = __DIR__ . str_replace("\\","/", $path) . '.php';
-
-		if(file_exists($path)){
-			include_once($path);
-		}
-	}
-
-	private function __construct(){
-		// Init
-		spl_autoload_register(array(__CLASS__, 'load'));
-	}
-
-	private function __clone(){
-		// lock
-	}
-
-	public static function addNamespacePath($namespace, $path){
-		//@TODO: Add here your code
-	}
+class Loader
+{
+  protected static $_instance;
+  protected static $_namespacePath = array();
+    
+  private function __construct()
+  {
+    spl_autoload_register(array(__CLASS__, 'loader'));
+  }
+  
+  public static function addNamespacePath($name, $path)
+  {
+    self::$_namespacePath[$name] = $path;
+  }
+  
+  private function loader($class)
+  {
+    $class_path = str_replace('\\', '/', $class);
+    if (file_exists('../'.lcfirst($class_path).'.php'))
+    {
+      include_once '../'.lcfirst($class_path).'.php';
+    }
+    else
+    {
+      foreach(self::$_namespacePath as $name => $path)
+      {
+        $name = str_replace('\\', '', $name);
+        include_once $path.str_replace($name, '', $class_path).'.php';
+      }
+    }
+  }
+   
+    private function __clone(){}
+    
+    public static function getInstance() {        
+    if (null === self::$_instance) {
+      self::$_instance = new self();
+    }
+    return self::$_instance;
+  }
 }
-
 Loader::getInstance();

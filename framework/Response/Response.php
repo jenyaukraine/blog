@@ -16,7 +16,6 @@
 
 namespace Framework\Response;
 
-
 class Response {
 
 	protected $headers = array();
@@ -27,6 +26,8 @@ class Response {
 
 	private static $msgs = array(
 		200 => 'Ok',
+		301 => 'Moved Permanently',
+		302 => 'Found',
 	    404 => 'Not found'
 	);
 
@@ -58,4 +59,5 @@ class Response {
 	public function sendBody(){
 		echo $this->content;
 	}
+
 } 
