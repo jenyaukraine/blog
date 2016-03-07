@@ -2,6 +2,7 @@
 
 namespace Framework\Router;
 
+use Framework\DI\Service;
 /**
  * Router.php
  */
@@ -25,6 +26,7 @@ class Router{
 	 *
 	 * @param $url
 	 */
+
 	public function parseRoute($url = ''){
 
 		$url = empty($url) ? $_SERVER['REQUEST_URI'] : $url;
@@ -50,7 +52,7 @@ class Router{
 			}
 
 		}
-
+		Service::set('route_controller', $route_found['controller']);
 		return $route_found;
 	}
 
@@ -68,4 +70,3 @@ class Router{
 	}
 
 }
- 

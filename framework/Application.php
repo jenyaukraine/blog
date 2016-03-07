@@ -1,7 +1,7 @@
 <?php
-/**    
+/**
  * Application.php
- * 
+ *
  * PHP version 5
  *
  * @category   Category Name
@@ -15,51 +15,75 @@
 
 namespace Framework;
 
-
 use Framework\Router\Router;
 use Framework\Exception\HttpNotFoundException;
+use Framework\Exception\BadControllerTypeException;
+use Framework\Exception\AuthRequredException;
 use Framework\Response\Response;
+use Framework\DI\Service;
 
+//Main variables SDI implementation
+use Framework\Security\Security;
+use Framework\Session\Session;
+
+//use Blog\Model\User;
 class Application {
+	private $config;
+	private $router;
+
+	public function __construct($config_path)
+	{
+			$this->config = include_once $config_path;
+			$this->router = new Router($this->config["routes"]);
+			Service::set('routes', $this->config["routes"]);
+			Service::set('main_layout', $this->config["main_layout"]);
+			Service::set('pdo', $this->config['pdo']);
+
+			//Main variables
+			Service::set('security', new Security());
+			Service::set('session', new Session());
+
+	}
 
 	public function run(){
+		$route = $this->router->parseRoute();
 
-		$router = new Router(include('../app/config/routes.php'));
+		try{
+	  if(!empty($route))
+		{
+			// TODO: getRole() extract.
+			if(empty($route['security']) || in_array('ROLE_USER', @$route['security']))
+			{
+					$controllerReflection = new \ReflectionClass($route['controller']);
+					$action = $route['action'] . 'Action';
+		  		if($controllerReflection->hasMethod($action))
+					{
+			  			$controller = $controllerReflection->newInstance();
+			  			$actionReflection = $controllerReflection->getMethod($action);
+			  			$response = $actionReflection->invokeArgs($controller, $route['params']);
 
-		$route =  $router->parseRoute();
-		require_once('../src/Blog/Controller/PostController.php');
+								// sending
+								$response->send();
+		 				}
+			} else throw new AuthRequredException('Login required');
+	 	} else {
+		 	throw new HttpNotFoundException('Route not found!');
+		}
+ 		}
+		catch(HttpNotFoundException $e)
+		{
+			// Render 404 or just show msg
+			echo $e->getMessage();
+ 		}
+ 		catch(AuthRequredException $e)
+		{
+			echo $e->getMessage();
+ 		}
+ 		catch(\Exception $e)
+		{
+	 		// Do 500 layout...
+	 		echo $e->getMessage();
+ 		}
 
-        try{
-	        if(!empty($route)){
-		        $controllerReflection = new \ReflectionClass($route['controller']);
-		        $action = $route['action'] . 'Action';
-		        if($controllerReflection->hasMethod($action)){
-			        $controller = $controllerReflection->newInstance();
-			        $actionReflection = $controllerReflection->getMethod($action);
-			        $response = $actionReflection->invokeArgs($controller, $route['params']);
-
-			        if($response instanceof Response){
-				    	// ...
-
-			        } else {
-				        //throw new BadResponseTypeException('Ooops');
-			        }
-		        }
-			} else {
-		        throw new HttpNotFoundException('Route not found');
-			}
-        }catch(HttpNotFoundException $e){
-	         // Render 404 or just show msg
-        }
-        catch(AuthRequredException $e){
-	    	// Reroute to login page
-	        //$response = new RedirectResponse(...);
-        }
-        catch(\Exception $e){
-	        // Do 500 layout...
-	        echo $e->getMessage();
-        }
-
-		$response->send();
 	}
-} 
+}

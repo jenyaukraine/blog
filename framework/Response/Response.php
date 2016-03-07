@@ -1,7 +1,7 @@
 <?php
-/**    
+/**
  * Response.php
- * 
+ *
  * PHP version 5
  *
  * @category   Category Name
@@ -28,7 +28,7 @@ class Response {
 		200 => 'Ok',
 		301 => 'Moved Permanently',
 		302 => 'Found',
-	    404 => 'Not found'
+	  404 => 'Not found'
 	);
 
 	public function __construct($content = '', $type = 'text/html', $code = 200){
@@ -60,4 +60,4 @@ class Response {
 		echo $this->content;
 	}
 
-} 
+}

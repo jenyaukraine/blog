@@ -2,6 +2,7 @@
 
 namespace Framework\Renderer;
 
+use Framework\DI\Service;
 /**
  * Class Renderer
  * @package Framework\Renderer
@@ -31,10 +32,10 @@ class Renderer {
 	 * @return html/text
 	 */
 	public function renderMain($content){
+		$flush = array();
+		$user = (object) array('email' => 'admin@gmail.com');
 
-		//@TODO: set all required vars and closures..
-
-		return $this->render($this->main_template, compact('content'), false);
+		return $this->render($this->main_template, compact('content', 'user', 'flush'), false);
 	}
 
 	/**
@@ -47,13 +48,25 @@ class Renderer {
 	 * @return  text/html
 	 */
 	public function render($template_path, $data = array(), $wrap = true){
-
 		extract($data);
-		// @TODO: provide all required vars or closures...
-
 		ob_start();
-		include( $template_path );
-		$content = ob_end_clean();
+		$include = function($controller, $action, $data = array())
+		{
+				$controller = new $controller;
+				$method = $action.'Action';
+				extract($data);
+			return $result = $controller->$method($id);
+		};
+		$generateToken = function(){};
+		$getRoute = function($key)
+		{
+				$controller = Service::get('route_controller');
+				$controller = new $controller;
+				return $controller->generateRoute($key);
+		};
+		include($template_path);
+	 	$content = ob_get_contents();
+		ob_end_clean();
 
 		if($wrap){
 			$content = $this->renderMain($content);
@@ -61,4 +74,4 @@ class Renderer {
 
 		return $content;
 	}
-} 
+}

@@ -6,17 +6,17 @@ class Loader
 {
   protected static $_instance;
   protected static $_namespacePath = array();
-    
+
   private function __construct()
   {
     spl_autoload_register(array(__CLASS__, 'loader'));
   }
-  
+
   public static function addNamespacePath($name, $path)
   {
     self::$_namespacePath[$name] = $path;
   }
-  
+
   private function loader($class)
   {
     $class_path = str_replace('\\', '/', $class);
@@ -33,10 +33,9 @@ class Loader
       }
     }
   }
-   
     private function __clone(){}
-    
-    public static function getInstance() {        
+
+    public static function getInstance() {
     if (null === self::$_instance) {
       self::$_instance = new self();
     }

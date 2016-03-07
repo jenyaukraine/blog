@@ -3,7 +3,9 @@
 namespace Framework\Controller;
 
 use Framework\Response\Response;
+use Framework\Request\Request;
 use Framework\Renderer\Renderer;
+use Framework\DI\Service;
 
 /**
  * Class Controller
@@ -13,6 +15,26 @@ use Framework\Renderer\Renderer;
  */
 abstract class Controller {
 
+	public function getRequest()
+	{
+			return new Request();
+	}
+	public function generateRoute($routeName)
+	{
+			return Service::get('routes')[$routeName]['pattern'];
+	}
+	public function redirect($location = '/')
+	{
+		$response = new Response();
+		$response->setHeader('Location', $location);
+		return $response->sendHeaders();
+	}
+	protected function getViewPath()
+	{
+		$route_path_src = substr_replace(str_replace('Controller', '', Service::get('route_controller')), '/views/', 4, 2);
+		$path = __DIR__."/../../src/".$route_path_src."/";
+		return $path;
+	}
 	/**
 	 * Rendering method
 	 *
@@ -21,21 +43,11 @@ abstract class Controller {
 	 *
 	 * @return  Response
 	 */
-	public function redirect($location = '/')
-	{
-		$response = new Response();
-		$response->setHeader('Location', $location);
-		return $response->sendHeaders();
-	}
 	public function render($layout, $data = array()){
-
-		// @TODO: Find a way to build full path to layout file
-		$fullpath = realpath('...' . $layout);
-
-		$renderer = new Renderer('...'); // Try to define renderer like a service. e.g.: Service::get('renderer');
-
+		$fullpath = realpath($this->getViewPath() . $layout . '.php');
+		$renderer = new Renderer(Service::get('main_layout'));
 		$content = $renderer->render($fullpath, $data);
 
 		return new Response($content);
 	}
-} 
+}
