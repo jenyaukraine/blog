@@ -5,15 +5,18 @@ class Security {
 
     public function isAuthenticated()
     {
-        return false;
+      return false;
     }
 
     public function clear(){}
 
     public function getUserRole()
     {
-      //TODO: complete consideration of roles.
-      return 'ROLE_USER';
+       return 'ROLE_USER';
+    }
+    public function setUser($user)
+    {
+      //($user);
     }
 }
 
