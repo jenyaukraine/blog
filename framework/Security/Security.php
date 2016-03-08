@@ -9,6 +9,12 @@ class Security {
     }
 
     public function clear(){}
+
+    public function getUserRole()
+    {
+      //TODO: complete consideration of roles.
+      return 'ROLE_USER';
+    }
 }
 
 

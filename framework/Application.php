@@ -26,7 +26,6 @@ use Framework\DI\Service;
 use Framework\Security\Security;
 use Framework\Session\Session;
 
-//use Blog\Model\User;
 class Application {
 	private $config;
 	private $router;
@@ -35,9 +34,11 @@ class Application {
 	{
 			$this->config = include_once $config_path;
 			$this->router = new Router($this->config["routes"]);
-			Service::set('routes', $this->config["routes"]);
-			Service::set('main_layout', $this->config["main_layout"]);
-			Service::set('pdo', $this->config['pdo']);
+			Service::set('config', $this->config);
+
+			// Setup database connetion...
+			$db = new \PDO($this->config['pdo']['dns'],$this->config['pdo']['user'],$this->config['pdo']['password']);
+			Service::set('pdo', $db);
 
 			//Main variables
 			Service::set('security', new Security());
@@ -51,8 +52,7 @@ class Application {
 		try{
 	  if(!empty($route))
 		{
-			// TODO: getRole() extract.
-			if(empty($route['security']) || in_array('ROLE_USER', @$route['security']))
+			if(empty($route['security']) || in_array(Service::get('security')->getUserRole(), @$route['security']))
 			{
 					$controllerReflection = new \ReflectionClass($route['controller']);
 					$action = $route['action'] . 'Action';

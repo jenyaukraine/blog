@@ -33,7 +33,12 @@ class Renderer {
 	 */
 	public function renderMain($content){
 		$flush = array();
-		$user = (object) array('email' => 'admin@gmail.com');
+		$user = null;
+		if (Service::get('security')->isAuthenticated()) {
+				$user = (object) array('email' => 'admin@gmail.com');
+		}
+		//TODO: Implement site sounds
+		//$flush = array('error'=>array("Error message show!"),'msgs'=>array("Simple message show!"));
 
 		return $this->render($this->main_template, compact('content', 'user', 'flush'), false);
 	}

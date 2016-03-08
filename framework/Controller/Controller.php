@@ -21,7 +21,7 @@ abstract class Controller {
 	}
 	public function generateRoute($routeName)
 	{
-			return Service::get('routes')[$routeName]['pattern'];
+			return Service::get('config')['routes'][$routeName]['pattern'];
 	}
 	public function redirect($location = '/')
 	{
@@ -45,7 +45,7 @@ abstract class Controller {
 	 */
 	public function render($layout, $data = array()){
 		$fullpath = realpath($this->getViewPath() . $layout . '.php');
-		$renderer = new Renderer(Service::get('main_layout'));
+		$renderer = new Renderer(Service::get('config')['main_layout']);
 		$content = $renderer->render($fullpath, $data);
 
 		return new Response($content);

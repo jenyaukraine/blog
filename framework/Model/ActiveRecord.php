@@ -11,25 +11,24 @@ class ActiveRecord {
 
 	public static function find($id = 'all')
 	{
-		// TODO: improve
-		$db = new \PDO(Service::get('pdo')['dns'],Service::get('pdo')['user'],Service::get('pdo')['password']);
-		if(!is_numeric($id))
+		$db = Service::get('pdo');
+		$sql = "SELECT * FROM posts";
+		if(is_numeric($id))
+  		 $sql .= " WHERE id = ".$id;
+
+		$res = $db->query($sql);
+		if($res->rowCount() > '1')
 		{
-					$res = $db->query("SELECT * FROM posts");
-					while($row = $res->fetch(\PDO::FETCH_ASSOC))
-					{
-							$row['name'] = '?';
-							$result[] = (object) $row;
-					}
-		} else {
-				$res = $db->query("SELECT * FROM posts WHERE id = ".$id);
-				$result = $res->fetch(\PDO::FETCH_ASSOC);
-				$result['name'] = '?';
+			while($row = $res->fetch(\PDO::FETCH_ASSOC))
+						$result[] = (object) $row;
 		}
+		else 	$result = $res->fetch(\PDO::FETCH_ASSOC);
 
 		return (object) $result;
 	}
 
-	public function save(){}
+	public function save(){
+		print_r("Email: ". $this->email. "\n Password:". $this->password. "\n Role:". $this->role);
+	}
 }
 ?>
