@@ -27,8 +27,20 @@ class ActiveRecord {
 		return (object) $result;
 	}
 
+	protected function keys($array = array())
+	{
+		return implode(',', array_keys(get_object_vars($this)));
+	}
+
+	protected function vars($array = array())
+	{
+		return implode('\',\'', array_values(get_object_vars($this)));
+	}
+
 	public function save(){
-		print_r("Email: ". $this->email. "\n Password:". $this->password. "\n Role:". $this->role);
+		$db = Service::get('pdo');
+		$sql = "INSERT INTO " .$this->getTable(). " (".$this->keys().") VALUES ('".$this->vars()."')";
+		$db->query($sql);
 	}
 }
 ?>
