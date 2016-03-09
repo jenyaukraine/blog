@@ -5,7 +5,7 @@ class Security {
 
     public function isAuthenticated()
     {
-      return false;
+      return true;
     }
 
     public function clear(){}

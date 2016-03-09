@@ -16,9 +16,13 @@ class Request
         return $_SERVER["REQUEST_METHOD"] == "POST";
     }
 
-    public function post($name)
+    public function post($name, $filter = 'STRING')
     {
         return $_POST[$name];
+    }
+    protected function filter($value, $filter = 'STRING')
+    {
+
     }
     public function get($name)
     {

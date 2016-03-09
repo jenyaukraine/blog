@@ -61,6 +61,8 @@ class ActiveRecord {
 
 	public function save(){
 		$db = Service::get('pdo');
+
+		//$rules = $this->getRules();
 		if($this->id == '')
 		{
 			unset($this->id);
