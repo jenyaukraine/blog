@@ -65,7 +65,7 @@ class Renderer {
 		$generateToken = function(){};
 		$getRoute = function($key)
 		{
-				$controller = Service::get('route_controller');
+				$controller = Service::get('route_controller')['controller'];
 				$controller = new $controller;
 				return $controller->generateRoute($key);
 		};

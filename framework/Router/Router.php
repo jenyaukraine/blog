@@ -52,7 +52,7 @@ class Router{
 			}
 
 		}
-		Service::set('route_controller', $route_found['controller']);
+		Service::set('route_controller', $route_found);
 		return $route_found;
 	}
 

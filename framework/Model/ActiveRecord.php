@@ -38,19 +38,36 @@ class ActiveRecord {
 		return (object) $result;
 	}
 
-	protected function keys($array = array())
+	protected function keys()
 	{
 		return implode(',', array_keys(get_object_vars($this)));
 	}
 
-	protected function vars($array = array())
+	protected function vars()
 	{
 		return implode('\',\'', array_values(get_object_vars($this)));
 	}
 
+	protected function keys_vars()
+	{
+		$str = null;
+		foreach ($this as $keys => $values)
+		{
+			$str[] = "`".$keys."` = '".$values."'";
+		}
+		$str = implode(',', $str);
+		return $str;
+	}
+
 	public function save(){
 		$db = Service::get('pdo');
-		$sql = "INSERT INTO " .$this->getTable(). " (".$this->keys().") VALUES ('".$this->vars()."')";
+		if($this->id == '')
+		{
+			unset($this->id);
+			$sql = "INSERT INTO " .$this->getTable(). " (".$this->keys().") VALUES ('".$this->vars()."')";
+		} else {
+			$sql = "UPDATE " .$this->getTable(). " SET ".$this->keys_vars()." WHERE id = ('".$this->id."')";
+		}
 		$db->query($sql);
 	}
 }

@@ -29,7 +29,11 @@ class Loader
       foreach(self::$_namespacePath as $name => $path)
       {
         $name = str_replace('\\', '', $name);
-        include_once $path.str_replace($name, '', $class_path).'.php';
+        $path = $path.str_replace($name, '', $class_path).'.php';
+        if (file_exists($path))
+        {
+            include_once $path;
+        }
       }
     }
   }

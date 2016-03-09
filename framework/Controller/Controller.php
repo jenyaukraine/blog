@@ -31,7 +31,7 @@ abstract class Controller {
 	}
 	protected function getViewPath()
 	{
-		$route_path_src = substr_replace(str_replace('Controller', '', Service::get('route_controller')), '/views/', 4, 2);
+		$route_path_src = str_replace('\\\\', '/views/', str_replace('Controller', '', Service::get('route_controller')['controller']));
 		$path = __DIR__."/../../src/".$route_path_src."/";
 		return $path;
 	}
