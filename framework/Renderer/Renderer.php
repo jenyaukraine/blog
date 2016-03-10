@@ -36,7 +36,7 @@ class Renderer {
 		$flush = Messenger::get();
 		$user = null;
 		if (Service::get('security')->isAuthenticated()) {
-				$user = (object) array('email' => Service::get('session')->__get('email')); // :D
+				$user = (object) Service::get('session')->__get();
 		}
 		return $this->render($this->main_template, compact('content', 'user', 'flush'), false);
 	}
