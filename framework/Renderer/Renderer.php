@@ -3,6 +3,7 @@
 namespace Framework\Renderer;
 
 use Framework\DI\Service;
+use Framework\Validation\Messenger;
 /**
  * Class Renderer
  * @package Framework\Renderer
@@ -32,14 +33,11 @@ class Renderer {
 	 * @return html/text
 	 */
 	public function renderMain($content){
-		$flush = array();
+		$flush = Messenger::get();
 		$user = null;
 		if (Service::get('security')->isAuthenticated()) {
-				$user = (object) array('email' => 'admin@gmail.com');
+				$user = (object) array('email' => Service::get('session')->__get('email')); // :D
 		}
-		//TODO: Implement site sounds
-		//$flush = array('error'=>array("Error message show!"),'msgs'=>array("Simple message show!"));
-
 		return $this->render($this->main_template, compact('content', 'user', 'flush'), false);
 	}
 

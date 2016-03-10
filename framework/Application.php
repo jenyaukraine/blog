@@ -20,11 +20,13 @@ use Framework\Exception\HttpNotFoundException;
 use Framework\Exception\BadControllerTypeException;
 use Framework\Exception\AuthRequredException;
 use Framework\Response\Response;
+use Framework\Response\ResponseRedirect;
 use Framework\DI\Service;
 
 //Main variables SDI implementation
 use Framework\Security\Security;
 use Framework\Session\Session;
+use Framework\Validation\Messenger;
 
 class Application {
 	private $config;
@@ -44,6 +46,9 @@ class Application {
 			Service::set('security', new Security());
 			Service::set('session', new Session());
 
+			//try
+			Service::set('message', new Messenger());
+
 	}
 
 	public function run(){
@@ -62,8 +67,7 @@ class Application {
 			  			$actionReflection = $controllerReflection->getMethod($action);
 			  			$response = $actionReflection->invokeArgs($controller, $route['params']);
 
-								// sending
-								$response->send();
+
 		 				}
 			} else throw new AuthRequredException('Login required');
 	 	} else {
@@ -77,13 +81,16 @@ class Application {
  		}
  		catch(AuthRequredException $e)
 		{
-			echo $e->getMessage();
+			Service::get('message')->set("Frightful you must login in!","msgs");
+			new ResponseRedirect("/");
+
  		}
  		catch(\Exception $e)
 		{
 	 		// Do 500 layout...
 	 		echo $e->getMessage();
  		}
-
+		if(!empty($response))
+			 $response->send();
 	}
 }
